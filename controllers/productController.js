@@ -17,12 +17,10 @@ export async function getProducts(req, res){
 
 export async function getCard(req, res){
     // Converting ID to be recognized by collection
-    const id = parseInt(req.params.id)
-    console.log(req.params.id)
+    const id = (req.params.id)
    
     try{
-        const card = await dataBase.collection("products")
-        .findOne({ id: id });
+        const card = await dataBase.collection("products").findOne({id:id});
         if(!card){
             res.sendStatus(404);
             return;
