@@ -14,3 +14,23 @@ export async function getProducts(req, res){
         res.sendStatus(500);
     }
 }
+
+export async function getCard(req, res){
+    // Converting ID to be recognized by collection
+    const id = parseInt(req.params.id)
+    console.log(req.params.id)
+   
+    try{
+        const card = await dataBase.collection("products")
+        .findOne({ id: id });
+        if(!card){
+            res.sendStatus(404);
+            return;
+        }
+
+        res.send(card);
+    }
+    catch(e){
+        res.sendStatus(500);
+    }
+}

@@ -34,20 +34,3 @@ export const signInSchemaMiddleware = (req, res, next) => {
     }
     next()
 }
-
-// export const statementMiddleware = (req,res,next) => {
-//     const newStatement = req.body
-//     const statementSchema = Joi.object({
-//         value: Joi.string().required(),
-//         description: Joi.string().required()
-//     })
-//     const validation = statementSchema.validate(newStatement)
-//         if(validation.error){
-//             res.sendStatus(422)
-//             return
-//         }
-//         else{
-//             res.locals.newStatement = newStatement
-//         }
-//         next()
-// }
