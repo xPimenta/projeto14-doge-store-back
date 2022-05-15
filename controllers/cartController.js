@@ -1,62 +1,72 @@
 import dataBase from "../database.js";
-import { ObjectId } from "mongodb"
+import { ObjectId } from "mongodb";
 
-export async function postProductToCart(req, res){
-
+export async function postProductToCart(req, res) {
   const { user } = req.body;
-	const { card } = req.body;
+  const { card } = req.body;
 
-  try{
-      const cart = await dataBase.collection("users").updateOne(
-        { name: user },
-        { $push: { cart: card } }
-      );
-      console.log(cart)
-      if(!card){
-          res.sendStatus(404);
-          return;
-      }
-      res.send(card);
-  }
-  catch(e){
-      res.sendStatus(e);
+  try {
+    const cart = await dataBase
+      .collection("users")
+      .updateOne({ name: user }, { $push: { cart: card } });
+    if (!card) {
+      res.sendStatus(404);
+      return;
+    }
+    res.send(card);
+  } catch (e) {
+    res.sendStatus(e);
   }
 }
 
-export async function deleteProductInCart(req, res){
+export async function getCart(req, res) {
+  const { user } = req.query;
+  try {
+    const userDb = await dataBase.collection("users").findOne({ name: user });
 
-  const { user } = req.body;
-	const { card } = req.body;
+    if (!userDb) {
+      res.sendStatus(404);
+      return;
+    }
 
-  try{
-      const cart = await dataBase.collection("users").updateOne(
-        { name: user },
-        { $delete: { cart: card } }
-      );
-      console.log(cart)
-      if(!card){
-          res.sendStatus(404);
-          return;
-      }
-      res.send(card);
-  }
-  catch(e){
-      res.sendStatus(e);
+    res.send(userDb.cart);
+  } catch (e) {
+    res.sendStatus(500);
   }
 }
 
-export async function getCart(req, res){
-  try{
-      const cart = await dataBase.collection("users").find(cart).toArray();
-      console.log(cart);
-      if(!cart){
-          res.sendStatus(404);
-          return;
-      }
+export async function postBuyCards(req, res) {
+  const { user } = req.body;
+  const cards = req.body.cards;
+  console.log(cards)
 
-      res.send(cart);
+  try {
+    const cart = await dataBase
+      .collection("users")
+      .updateOne({ name: user }, { $push: { owned: cards } });
+    if (!cards) {
+      res.sendStatus(404);
+      return;
+    }
+    res.send(cards);
+  } catch (e) {
+    res.sendStatus(e);
   }
-  catch(e){
-      res.sendStatus(500);
+}
+
+export async function getOwnedCards(req, res) {
+  const { user } = req.query;
+  try {
+    const userDb = await dataBase.collection("users").findOne({ name: user });
+
+    if (!userDb) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.send(userDb.owned);
+    console.log(userDb.owned.card);
+  } catch (e) {
+    res.sendStatus(500);
   }
 }
