@@ -37,7 +37,10 @@ export async function getCart(req, res) {
 
 export async function postBuyCards(req, res) {
   const { user } = req.body;
-  const cards = req.body.cards;
+  const { cards } = req.body;
+  console.log(cards)
+  console.log(req.body.cards)
+
 
   try {
     const cart = await dataBase
@@ -62,7 +65,6 @@ export async function getOwnedCards(req, res) {
       res.sendStatus(404);
       return;
     }
-
     res.send(userDb.owned);
   } catch (e) {
     res.sendStatus(500);
