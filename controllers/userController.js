@@ -9,7 +9,9 @@ export async function resgisterUser(req,res) {
         await dataBase.collection("users").insertOne({
             name: user.name,
             email: user.email,
-            password: encryptedPassword
+            password: encryptedPassword,
+            cart: [],
+            owned: [],
         })
         res.sendStatus(201)
     }catch(e){
