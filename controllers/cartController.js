@@ -6,7 +6,7 @@ export async function postProductToCart(req, res) {
   const { card } = req.body;
 
   try {
-    const cart = await dataBase
+    const userDb2 = await dataBase
       .collection("users")
       .updateOne({ name: user }, { $push: { cart: card } });
     if (!card) {
@@ -38,7 +38,6 @@ export async function getCart(req, res) {
 export async function postBuyCards(req, res) {
   const { user } = req.body;
   const cards = req.body.cards;
-  console.log(cards)
 
   try {
     const cart = await dataBase
@@ -65,7 +64,6 @@ export async function getOwnedCards(req, res) {
     }
 
     res.send(userDb.owned);
-    console.log(userDb.owned.card);
   } catch (e) {
     res.sendStatus(500);
   }
