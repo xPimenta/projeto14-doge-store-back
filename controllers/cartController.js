@@ -2,11 +2,15 @@ import dataBase from "../database.js";
 import { ObjectId } from "mongodb";
 
 export async function postProductToCart(req, res) {
-  const { localToken } = req.body;
   const { card } = req.body;
+  const { authorization } = req.headers;
+
+  const token = authorization?.replace("Bearer ", "").trim()
+    if (!token) return res.sendStatus(401)
+    console.log(token)
 
   try {
-    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const session = await dataBase.collection("sessions").findOne({ token: token });
     const cart = await dataBase.collection("users").updateOne({ _id: ObjectId(session.id) }, { $push: { cart: card } });
 
     if (!card) {
@@ -20,10 +24,12 @@ export async function postProductToCart(req, res) {
 }
 
 export async function getCart(req, res) {
-  const { localToken } = req.query;
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "").trim()
+    if (!token) return res.sendStatus(401)
 
   try {
-    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const session = await dataBase.collection("sessions").findOne({ token: token });
     const user = await dataBase.collection("users").findOne({ _id: ObjectId(session.id) });
 
     if (!user) {
@@ -38,11 +44,15 @@ export async function getCart(req, res) {
 }
 
 export async function postBuyCards(req, res) {
-  const { localToken } = req.body;
   const { cards } = req.body;
+  const { authorization } = req.headers;
+
+  const token = authorization?.replace("Bearer ", "").trim()
+    if (!token) return res.sendStatus(401)
+    console.log(token)
 
   try {
-    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const session = await dataBase.collection("sessions").findOne({ token: token });
     const owned = await dataBase.collection("users").updateOne({ _id: ObjectId(session.id) }, { $push: { owned: cards } });
     if (!cards) {
       res.sendStatus(404);
@@ -55,11 +65,12 @@ export async function postBuyCards(req, res) {
 }
 
 export async function getOwnedCards(req, res) {
-  const { localToken } = req.query;
-  console.log(req.header)
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "").trim()
+    if (!token) return res.sendStatus(401)
 
   try {
-    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const session = await dataBase.collection("sessions").findOne({ token: token });
     const user = await dataBase.collection("users").findOne({ _id: ObjectId(session.id) });
 
     if (!user) {
