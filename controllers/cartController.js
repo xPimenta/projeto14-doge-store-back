@@ -56,6 +56,7 @@ export async function postBuyCards(req, res) {
 
 export async function getOwnedCards(req, res) {
   const { localToken } = req.query;
+  console.log(req.header)
 
   try {
     const session = await dataBase.collection("sessions").findOne({ token: localToken });

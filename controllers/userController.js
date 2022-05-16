@@ -16,6 +16,7 @@ export async function resgisterUser(req,res) {
             password: encryptedPassword,
             cart: [],
             owned: [],
+            purchasedData: {}
         })
         res.sendStatus(201).send("Account created succesfully.")
     }catch(e){
