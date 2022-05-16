@@ -44,3 +44,40 @@ export async function loginUser(req,res) {
         res.sendStatus(400)
     }
 }
+
+export async function checkoutUser(req, res){
+    const userData = res.locals.user;
+    try{
+        const user = await dataBase.collection("users").findOne({ email: userData.email });
+        if(!user){
+            return res.sendStatus(401);
+        }
+        
+        await dataBase.collection("users").updateOne(
+            { email: userData.email },
+            { $set: {purchasedData: {
+                cpf: userData.cpf,
+                address: userData.address,
+                cep: userData.cep,
+                cardNumber: userData.cardNumber
+            } } }
+        );
+        
+        const buyerData = await dataBase.collection("users").findOne({ email: userData.email });
+        if (!buyerData) {
+          res.sendStatus(404);
+          return;
+        }
+
+        /* Deleta dados sensíveis */
+        delete buyerData.password;
+        delete buyerData.purchasedData.cardNumber;
+
+        res.status(200).send(buyerData);
+
+        
+    }
+    catch{
+        res.sendStatus(400);
+    }
+}
