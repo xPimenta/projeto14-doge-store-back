@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 export async function postProductToCart(req, res) {
   const { card } = req.body;
   const { authorization } = req.headers;
+  console.log(card)
 
   const token = authorization?.replace("Bearer ", "").trim()
     if (!token) return res.sendStatus(401)
