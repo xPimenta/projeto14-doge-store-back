@@ -2,70 +2,70 @@ import dataBase from "../database.js";
 import { ObjectId } from "mongodb";
 
 export async function postProductToCart(req, res) {
-  const { user } = req.body;
+  const { localToken } = req.body;
   const { card } = req.body;
 
   try {
-    const userDb2 = await dataBase
-      .collection("users")
-      .updateOne({ name: user }, { $push: { cart: card } });
+    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const cart = await dataBase.collection("users").updateOne({ _id: ObjectId(session.id) }, { $push: { cart: card } });
+
     if (!card) {
       res.sendStatus(404);
       return;
     }
-    res.send(card);
+    res.send(cart);
   } catch (e) {
     res.sendStatus(e);
   }
 }
 
 export async function getCart(req, res) {
-  const { user } = req.query;
-  try {
-    const userDb = await dataBase.collection("users").findOne({ name: user });
+  const { localToken } = req.query;
 
-    if (!userDb) {
+  try {
+    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const user = await dataBase.collection("users").findOne({ _id: ObjectId(session.id) });
+
+    if (!user) {
       res.sendStatus(404);
       return;
     }
 
-    res.send(userDb.cart);
+    res.send(user.cart);
   } catch (e) {
     res.sendStatus(500);
   }
 }
 
 export async function postBuyCards(req, res) {
-  const { user } = req.body;
+  const { localToken } = req.body;
   const { cards } = req.body;
-  console.log(cards)
-  console.log(req.body.cards)
-
 
   try {
-    const cart = await dataBase
-      .collection("users")
-      .updateOne({ name: user }, { $push: { owned: cards } });
+    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const owned = await dataBase.collection("users").updateOne({ _id: ObjectId(session.id) }, { $push: { owned: cards } });
     if (!cards) {
       res.sendStatus(404);
       return;
     }
-    res.send(cards);
+    res.send(owned);
   } catch (e) {
     res.sendStatus(e);
   }
 }
 
 export async function getOwnedCards(req, res) {
-  const { user } = req.query;
-  try {
-    const userDb = await dataBase.collection("users").findOne({ name: user });
+  const { localToken } = req.query;
 
-    if (!userDb) {
+  try {
+    const session = await dataBase.collection("sessions").findOne({ token: localToken });
+    const user = await dataBase.collection("users").findOne({ _id: ObjectId(session.id) });
+
+    if (!user) {
       res.sendStatus(404);
       return;
     }
-    res.send(userDb.owned);
+    res.send(user.owned);
   } catch (e) {
     res.sendStatus(500);
   }
