@@ -18,9 +18,10 @@ export async function resgisterUser(req,res) {
             owned: [],
             purchasedData: {}
         })
-        res.sendStatus(201).send("Account created succesfully.")
+        res.status(201).send("Account created succesfully.")
     }catch(e){
-        res.sendStatus(422).send()
+        res.status(422).send("Error creating account")
+        console.log(e);
     }
 }
 
@@ -34,10 +35,10 @@ export async function loginUser(req,res) {
                 id: user._id,
                 token
             })
-            res.send([token, user.name]).status(200)
+            res.status(200).send([token, user.name])
             }
         else{
-            res.sendStatus(400).send("Email or password is incorrect.")
+            res.status(400).send("Email or password is incorrect.")
         }
     }
     catch(e){
